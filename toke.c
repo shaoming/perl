@@ -4548,6 +4548,8 @@ Perl_yylex(pTHX)
 	    PL_bufptr += 2;
 	    if (*PL_bufptr != '{')
 		PL_bufptr++;
+	    start_force(PL_curforce);
+	    /* XXX probably need a CURMAD(something) here */
 	    PL_expect = XTERMBLOCK;
 	    force_next(DO);
 	}
@@ -4603,7 +4605,9 @@ Perl_yylex(pTHX)
 	    PL_bufptr++;
 	    /* having compiled a (?{..}) expression, return the original
 	     * text too, as a const */
-	    PL_nextval[PL_nexttoke].opval =
+	    start_force(PL_curforce);
+	    /* XXX probably need a CURMAD(something) here */
+	    NEXTVAL_NEXTTOKE.opval =
 		    (OP*)newSVOP(OP_CONST, 0,
 			newSVpvn(PL_sublex_info.re_eval_start,
 				PL_bufptr - PL_sublex_info.re_eval_start));
