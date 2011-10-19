@@ -4607,7 +4607,7 @@ Perl_re_op_compile(pTHX_ SV * const pattern, OP *expr, U32 orig_pm_flags)
     I32 flags;
     I32 minlen = 0;
     U32 pm_flags;
-    SV *pat;
+    SV * volatile pat;
 
     /* these are all flags - maybe they should be turned
      * into a single int with different bit masks */
