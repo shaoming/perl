@@ -512,8 +512,8 @@ get_regex_charset_name(const U32 flags, STRLEN* const lenp)
 #if defined(__GNUC__) && !defined(PERL_GCC_BRACE_GROUPS_FORBIDDEN)
 #  define ReREFCNT_inc(re)						\
     ({									\
-	/* This is here to generate a casting warning if incorrect.  */	\
-	REGEXP *const _rerefcnt_inc = (re);				\
+	/* This is here to generate a casting warning if incorreXXXct.  */	\
+	REGEXP *const _rerefcnt_inc = (re);		                \
 	assert(SvTYPE(_rerefcnt_inc) == SVt_REGEXP);			\
 	SvREFCNT_inc(_rerefcnt_inc);					\
 	_rerefcnt_inc;							\

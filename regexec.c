@@ -123,25 +123,29 @@
 
 /* these are unrolled below in the CCC_TRY_XXX defined */
 #ifdef EBCDIC
-    /* Often 'str' is a hard-coded utf8 string instead of utfebcdic. so just
-     * skip the check on EBCDIC platforms */
+    /* Often 'str' is a hard-coded utf8 string instead of utfebcdic.  So just
+     * skip the check on EBCDIC platforms; and if NDEBUG is defined the assert
+     * will be skipped and the 'ok' will be a variable that is set but not
+     * tested, generating a warning under some compilers */
 #   define LOAD_UTF8_CHARCLASS(class,str) LOAD_UTF8_CHARCLASS_NO_CHECK(class)
 #else
 #   define LOAD_UTF8_CHARCLASS(class,str) STMT_START { \
     if (!CAT2(PL_utf8_,class)) { \
-	bool ok; \
+	bool ok PERL_UNUSED_DECL; \
 	ENTER; save_re_context(); \
 	ok=CAT2(is_utf8_,class)((const U8*)str); \
-	assert(ok); assert(CAT2(PL_utf8_,class)); LEAVE; } } STMT_END
+	assert(ok); assert(CAT2(PL_utf8_,class)); LEAVE; \
+    } } STMT_END
 #endif
 
 /* Doesn't do an assert to verify that is correct */
 #define LOAD_UTF8_CHARCLASS_NO_CHECK(class) STMT_START { \
     if (!CAT2(PL_utf8_,class)) { \
-	bool throw_away __attribute__unused__; \
+	bool throw_away PERL_UNUSED_DECL; \
 	ENTER; save_re_context(); \
 	throw_away = CAT2(is_utf8_,class)((const U8*)" "); \
-	LEAVE; } } STMT_END
+	LEAVE; \
+    } } STMT_END
 
 #define LOAD_UTF8_CHARCLASS_ALNUM() LOAD_UTF8_CHARCLASS(alnum,"a")
 #define LOAD_UTF8_CHARCLASS_DIGIT() LOAD_UTF8_CHARCLASS(digit,"0")
@@ -6006,7 +6010,7 @@ S_regrepeat(pTHX_ const regexp *prog, const regnode *p, I32 max, int depth)
 
 	    /* Here, the string is utf8, and the pattern char is different
 	     * in utf8 than not, so can't compare them directly.  Outside the
-	     * loop, find find the two utf8 bytes that represent c, and then
+	     * loop, find the two utf8 bytes that represent c, and then
 	     * look for those in sequence in the utf8 string */
 	    U8 high = UTF8_TWO_BYTE_HI(c);
 	    U8 low = UTF8_TWO_BYTE_LO(c);
