@@ -63,6 +63,7 @@
 #  endif
 #endif
 
+#define PERL_GLOBAL_STRUCT_PRIVATE
 #ifdef PERL_GLOBAL_STRUCT_PRIVATE
 #  ifndef PERL_GLOBAL_STRUCT
 #    define PERL_GLOBAL_STRUCT
