@@ -4543,6 +4543,7 @@ Perl_re_compile(pTHX_ SV * const pattern, U32 orig_pm_flags)
     scan_data_t data;
     RExC_state_t RExC_state;
     RExC_state_t * const pRExC_state = &RExC_state;
+    SV* pattern_ref;
 #ifdef TRIE_STUDY_OPT    
     int restudied;
     RExC_state_t copyRExC_state;
@@ -4552,6 +4553,16 @@ Perl_re_compile(pTHX_ SV * const pattern, U32 orig_pm_flags)
     PERL_ARGS_ASSERT_RE_COMPILE;
 
     DEBUG_r(if (!PL_colorset) reginitcolors());
+
+    /*if (! SvUTF8(pattern)) {
+	pattern_ref = SvRV(pattern);
+	if (pattern_ref && SvTYPE(pattern_ref) == SVt_REGEXP
+	&& RX_UTF8(pattern_ref))
+    {*/
+	exp = SvPV(pattern, plen);
+    /*}
+    }
+    */
 
     RExC_utf8 = RExC_orig_utf8 = SvUTF8(pattern);
     RExC_uni_semantics = 0;
@@ -4565,7 +4576,7 @@ Perl_re_compile(pTHX_ SV * const pattern, U32 orig_pm_flags)
     }
 
     if (jump_ret == 0) {    /* First time through */
-	exp = SvPV(pattern, plen);
+	/*exp = SvPV(pattern, plen);*/
 	xend = exp + plen;
 	/* ignore the utf8ness if the pattern is 0 length */
 	if (plen == 0) {
