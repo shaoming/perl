@@ -4150,6 +4150,15 @@ PP(pp_entereval)
 	const char * const p = SvPV_const(sv, len);
 
 	sv = newSVpvn_flags(p, len, SVs_TEMP | SvUTF8(sv));
+
+	if (PL_op->op_private & OPpEVAL_BYTES && SvUTF8(sv))
+	    SvPVbyte_force(sv, len);
+    }
+    else if (PL_op->op_private & OPpEVAL_BYTES && SvUTF8(sv)) {
+	/* Don’t modify someone else’s scalar */
+	STRLEN len;
+	sv = newSVsv(sv);
+	SvPVbyte_force(sv,len);
     }
 
     TAINT_IF(SvTAINTED(sv));
